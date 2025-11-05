@@ -1,20 +1,14 @@
-# 🩺 Assistente Médico Regulatório
+# 🩺 Assistente Médico Regulatório 🩺
 
-> é um assistente conversacional baseado em **LLM + RAG (Retrieval-Augmented Generation)** que responde perguntas sobre **regulação, normas, auditoria e codificação médica** utilizando apenas **fontes oficiais** (ANVISA, SUS, CFM, OMS).  
+> Assistente conversacional baseado em **LLM + RAG (Retrieval-Augmented Generation)** que responde perguntas sobre **regulação, normas, auditoria e codificação médica** utilizando apenas **fontes oficiais** (ANVISA, SUS, CFM, OMS).  
 > O projeto é **educacional** e visa explorar o ciclo completo de um sistema GenAI seguro e rastreável — sem emitir diagnósticos, prescrições ou recomendações clínicas.
 
 ## 🎯 Objetivo
-tem como missão facilitar o acesso a informações **regulatórias e administrativas** do setor de saúde brasileiro, centralizando dados dispersos e complexos em um ambiente de consulta natural.
-
-O foco do projeto é **aprender e demonstrar boas práticas de engenharia de sistemas GenAI**, explorando:
-- Construção de *pipelines* RAG (retrieval + geração);
-- Observabilidade e rastreabilidade de respostas;
-- Testes e avaliação de qualidade em LLMs;
-- Ética, segurança e mitigação de riscos em domínios sensíveis.
+Tem como missão facilitar o acesso a informações **regulatórias e administrativas** do setor de saúde brasileiro, centralizando dados dispersos e complexos em um ambiente de consulta natural.
 
 ---
 
-## ⚖️ Escopos e Focos do Projeto
+## Escopos e Focos do Projeto
 
 ### 1. **Regulação, Normas e Processos**
 > Consulta e explicação de leis, portarias e resoluções oficiais.
