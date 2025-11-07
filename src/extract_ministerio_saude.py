@@ -1,46 +1,40 @@
-import pdfplumber
+from functions import extract_portaria_text, save_jsonl
 from pathlib import Path
 
-def listar_caminhos(pasta: str):
-    """Lista todos os arquivos e subpastas recursivamente."""
-    p = Path(pasta)
-    caminhos = [str(arquivo) for arquivo in p.rglob('*')]
-    return caminhos
-
-
-def extract_clean_text(pdf_path: str, output_path: str = None) -> str:
-    """
-    Extrai e limpa o texto de um PDF.
-    Se 'output_path' for informado, salva o conteúdo em um arquivo .txt.
-    """
-    text = ""
-    with pdfplumber.open(pdf_path) as pdf:
-        for page in pdf.pages:
-            page_text = page.extract_text(x_tolerance=2, y_tolerance=2)
-            if page_text:
-                text += page_text + "\n\n"
-
-    text = text.strip()
-
-    # 🔹 Se o output_path foi informado, salva o texto
-    if output_path:
-        output_path = Path(output_path)
-        output_path.parent.mkdir(parents=True, exist_ok=True)  # cria diretórios se não existirem
-        with open(output_path, "w", encoding="utf-8") as f:
-            f.write(text)
-
-    return text
-
-
 if __name__ == "__main__":
-    input_dir = Path("../data/raw/anvisa/")
-    output_dir = Path("../data/trusted/anvisa/")
+    
+    output_path_raw = "../data/raw/ministerio_saude/"
+    Path(output_path_raw).mkdir(parents=True, exist_ok=True)
+    output_path_trusted = "../data/trusted/ministerio_saude/ministerio_saude.jsonl"
+    lst_ministerio_saude = []
+    
+    urls = [
+        'https://bvsms.saude.gov.br/bvs/saudelegis/gm/2013/prt0529_01_04_2013.html',
+        'https://bvsms.saude.gov.br/bvs/saudelegis/gm/2013/prt1377_09_07_2013.html',
+        'https://bvsms.saude.gov.br/bvs/saudelegis/gm/2013/prt2095_24_09_2013.html',
+        'https://bvsms.saude.gov.br/bvs/saudelegis/gm/2013/prt3390_30_12_2013.html',
+        'https://bvsms.saude.gov.br/bvs/saudelegis/gm/2014/prt3410_30_12_2013.html',
+        'https://bvsms.saude.gov.br/bvs/saudelegis/gm/2015/prt0285_24_03_2015.html',
+        'https://bvsms.saude.gov.br/bvs/saudelegis/gm/2014/prt0389_13_03_2014.html',
+        'https://bvsms.saude.gov.br/bvs/saudelegis/gm/2014/prt0183_30_01_2014.html'
+        
+    ]    
+    
+    for url in urls:
+        
+        # Read and save the text data in raw format
+        
+        text = extract_portaria_text(url, output_path = f"{output_path_raw}{url[-23:-5]}.txt")
+        
+        # Save the data as jsonl format
+        
+        json_ministerio_saude_tmp = {
+            "source": url,
+            "category": "regulacao",
+            "font": "ministerio_saude",
+            "text": text
+        }
+        lst_ministerio_saude.append(json_ministerio_saude_tmp)
 
-    for caminho in listar_caminhos(input_dir):
-        if caminho.endswith(".pdf"):
-            pdf_path = Path(caminho)
-            txt_name = pdf_path.stem + ".txt"  # mesmo nome, mas extensão .txt
-            output_path = output_dir / txt_name
-
-            texto = extract_clean_text(pdf_path, output_path=output_path)
-            print(f"✅ Extraído e salvo: {output_path}")
+    save_jsonl(lst_ministerio_saude, output_path_trusted)
+    print(f"✅ Arquivo salvo em: {output_path_trusted} ({len(lst_ministerio_saude)} documentos)")
