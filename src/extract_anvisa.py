@@ -1,5 +1,6 @@
 import pdfplumber
 from pathlib import Path
+import json
 
 def listar_caminhos(pasta: str):
     p = Path(pasta)
@@ -16,12 +17,27 @@ def extract_clean_text(pdf_path: str) -> str:
     return text.strip()
 
 if __name__ == "__main__":
+    
     caminhos = listar_caminhos("../data/raw/anvisa/")
     
-    for caminho in caminhos:
+    lst_anvisa = []
     
-        pdf_path = "../data/raw/anvisa/Nota técnica n° 34.pdf"
-
-        raw = extract_clean_text(pdf_path)
-
-        print(raw[:1000])
+    for file in caminhos:
+        
+        raw = extract_clean_text(file)
+        category = 'regulacao'
+        font = 'anvisa'
+        
+        json_anvisa_tmp = {
+            'source': file,
+            'category': category,
+            'font': font,
+            'text': raw
+        }
+        
+        lst_anvisa.append(json_anvisa_tmp)
+    
+    with open("../data/trusted/anvisa.jsonl", "w", encoding="utf-8") as f:
+        for doc in lst_anvisa:
+            json.dump(doc, f, ensure_ascii=False)
+            f.write("\n")
