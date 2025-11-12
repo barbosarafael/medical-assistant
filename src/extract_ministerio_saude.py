@@ -1,4 +1,4 @@
-from functions import extract_portaria_text, save_jsonl
+from functions import extract_portaria_text, save_jsonl, clean_text
 from pathlib import Path
 
 if __name__ == "__main__":
@@ -24,7 +24,9 @@ if __name__ == "__main__":
         
         # Read and save the text data in raw format
         
-        text = extract_portaria_text(url, output_path = f"{output_path_raw}{url[-23:-5]}.txt")
+        raw_text = extract_portaria_text(url, output_path = f"{output_path_raw}{url[-23:-5]}.txt")
+        
+        text = clean_text(raw_text)
         
         # Save the data as jsonl format
         

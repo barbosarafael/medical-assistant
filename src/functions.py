@@ -70,3 +70,56 @@ def extract_portaria_text(url, output_path=None):
         print(f"Arquivo salvo em: {output_path}")
 
     return text
+
+def clean_text(text: str) -> str:
+    """
+    Limpa e normaliza textos de diferentes fontes (PDF, HTML, CSV).
+    
+    Etapas:
+    1. Normalização Unicode (NFKC)
+    2. Remoção de caracteres de controle e não imprimíveis
+    3. Substituição de múltiplos espaços, tabs e quebras de linha
+    4. Remoção de caracteres redundantes como "�", "\x0c", etc.
+    5. Padronização de aspas e traços
+    6. Strip final e retorno
+    
+    Args:
+        text (str): texto bruto extraído.
+    
+    Returns:
+        str: texto limpo e normalizado.
+    """
+
+    if not text:
+        return ""
+
+    # 1. Normaliza para evitar variações Unicode (acentos compostos, etc.)
+    text = unicodedata.normalize("NFKC", text)
+
+    # 2. Remove caracteres de controle e não imprimíveis (C0/C1)
+    text = ''.join(ch for ch in text if unicodedata.category(ch)[0] != "C")
+
+    # 3. Remove caracteres substitutos corrompidos comuns em PDFs
+    text = text.replace("�", "")
+
+    # 4. Substitui múltiplos espaços, tabs e quebras de linha por um único espaço
+    text = re.sub(r"[\r\t\f\v]+", " ", text)
+    text = re.sub(r"\s{2,}", " ", text)
+
+    # 5. Substitui traços e aspas tipográficas por versões simples
+    text = text.replace("“", '"').replace("”", '"').replace("‘", "'").replace("’", "'")
+    text = text.replace("–", "-").replace("—", "-")
+
+    # 6. Remove espaços antes de pontuação
+    text = re.sub(r"\s+([,.!?;:])", r"\1", text)
+
+    # 7. Remove cabeçalhos de página comuns em PDFs (ex: “Página X de Y”)
+    text = re.sub(r"Página\s+\d+\s+(de\s+\d+)?", "", text, flags=re.IGNORECASE)
+
+    # 8. Remove múltiplas quebras de linha
+    text = re.sub(r"\n{2,}", "\n", text)
+
+    # 9. Trim final
+    text = text.strip()
+
+    return text

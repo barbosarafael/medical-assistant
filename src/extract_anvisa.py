@@ -1,4 +1,4 @@
-from functions import listar_caminhos, extract_clean_text, save_jsonl
+from functions import listar_caminhos, extract_clean_text, save_jsonl, clean_text
 
 if __name__ == "__main__":
     input_path = "../data/raw/anvisa/"
@@ -9,11 +9,12 @@ if __name__ == "__main__":
 
     for file in caminhos:
         raw = extract_clean_text(file)
+        text = clean_text(raw)
         json_anvisa_tmp = {
             "source": file,
             "category": "regulacao",
             "font": "anvisa",
-            "text": raw
+            "text": text
         }
         lst_anvisa.append(json_anvisa_tmp)
 
