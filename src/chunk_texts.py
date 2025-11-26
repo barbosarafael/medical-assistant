@@ -14,7 +14,7 @@ def process_jsonl(input_path: str, output_path: str, max_tokens: int = 500):
         if not text.strip():
             continue
 
-        chunks = chunk_text(text, max_tokens=max_tokens)
+        chunks = chunk_text(text, max_tokens=200)
 
         for i, chunk in enumerate(chunks):
             chunked_docs.append({
@@ -56,6 +56,6 @@ if __name__ == "__main__":
     log_info(f"📊 Total estimado de tokens antes do chunking: {total_tokens:,}")
 
     for file in jsonl_files:
-        process_jsonl(str(file), output_file, max_tokens=500)
+        process_jsonl(str(file), output_file, max_tokens=200)
 
     log_info(f"🏁 Chunking finalizado! Arquivo salvo em: {output_file}")

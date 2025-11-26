@@ -6,7 +6,7 @@ import textwrap
 # ==============================================
 DB_PATH = "data/vector_db"
 COLLECTION_NAME = "medical_docs"
-QUERY = "Qual a regulamentação para produtos saneantes com ação anmicrobiana?"
+QUERY = "Qual o código usado para a VACINA ADSORVIDA MENINGOCÓCICA C?"
 TOP_K = 5
 
 # ==============================================

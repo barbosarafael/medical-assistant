@@ -3,8 +3,8 @@ import json
 from pathlib import Path
 from functions import clean_text
 
-input_csv = "../data/raw/tuss/Tabela_20_Medicamentos.csv"
-output_jsonl = "../data/trusted/tuss/tuss.jsonl"
+input_csv = "data/raw/tuss/Tabela_20_Medicamentos.csv"
+output_jsonl = "data/trusted/tuss/tuss.jsonl"
 
 Path(output_jsonl).parent.mkdir(parents=True, exist_ok=True)
 
