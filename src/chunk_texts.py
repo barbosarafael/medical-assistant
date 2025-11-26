@@ -14,7 +14,7 @@ def process_jsonl(input_path: str, output_path: str, max_tokens: int = 500):
         if not text.strip():
             continue
 
-        chunks = chunk_text(text, max_tokens=200)
+        chunks = chunk_text(text, max_tokens=max_tokens)
 
         for i, chunk in enumerate(chunks):
             chunked_docs.append({
@@ -38,9 +38,10 @@ def process_jsonl(input_path: str, output_path: str, max_tokens: int = 500):
 if __name__ == "__main__":
     log_info("🚀 Iniciando o processo de chunking...")
 
-    input_dir = Path("../data/trusted/")
-    output_file = "../data/refined/chunked_docs.jsonl"
-    Path(output_file).unlink(missing_ok=True)  # recria do zero
+    base_dir = Path(__file__).resolve().parent.parent
+    input_dir = base_dir / "data" / "trusted"
+    output_file = base_dir / "data" / "refined" / "chunked_docs.jsonl"
+    output_file.unlink(missing_ok=True)  # recria do zero
 
     jsonl_files = list(input_dir.rglob("*.jsonl"))
     if not jsonl_files:
@@ -56,6 +57,6 @@ if __name__ == "__main__":
     log_info(f"📊 Total estimado de tokens antes do chunking: {total_tokens:,}")
 
     for file in jsonl_files:
-        process_jsonl(str(file), output_file, max_tokens=200)
+        process_jsonl(str(file), output_file, max_tokens=100)
 
     log_info(f"🏁 Chunking finalizado! Arquivo salvo em: {output_file}")
