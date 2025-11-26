@@ -158,3 +158,6 @@ def ask(question: str):
 if __name__ == "__main__":
     # Exemplo de pergunta
     ask("Qual o código usado para a VACINA ADSORVIDA MENINGOCÓCICA C?")
+
+# TODO: entender pq está demorando tanto a gerar a resposta
+# TODO: entender pq está gerando mais de uma resposta para as perguntas
