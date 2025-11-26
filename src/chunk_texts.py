@@ -14,7 +14,21 @@ def process_jsonl(input_path: str, output_path: str, max_tokens: int = 500):
         if not text.strip():
             continue
 
-        chunks = chunk_text(text, max_tokens=max_tokens)
+        category = doc.get("category")
+        font = doc.get("font")
+
+        # TUSS: não quebrar
+        if category == "codificacao" and font == "tuss":
+            chunks = [text]
+
+        # Regulação: chunks menores e mais controlados
+        elif category == "regulacao":
+            chunks = chunk_text(text, max_tokens=70)
+
+        # Outros casos: mantém padrão
+        else:
+            chunks = chunk_text(text, max_tokens=max_tokens)
+
 
         for i, chunk in enumerate(chunks):
             chunked_docs.append({

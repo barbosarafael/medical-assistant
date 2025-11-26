@@ -90,6 +90,38 @@ def generate_answer(tokenizer, model, prompt: str) -> str:
 
     return tokenizer.decode(output[0], skip_special_tokens=True)
 
+def rerank_results(results):
+    """
+    Reordena os resultados do Chroma usando:
+    - similaridade vetorial
+    - sinais simples de domínio
+    SEM usar intenção explícita.
+    """
+
+    ranked = []
+
+    for doc, meta, dist in zip(
+        results["documents"][0],
+        results["metadatas"][0],
+        results["distances"][0]
+    ):
+        # Score base vindo do embedding
+        score = 1 / (1 + dist)
+
+        # Pequeno bônus se for codificação (TUSS é mais objetiva)
+        if meta.get("category") == "codificacao":
+            score += 0.15
+
+        # Pequeno bônus se o texto tem formato claro de código
+        if "Código:" in doc or "Código :" in doc:
+            score += 0.10
+
+        ranked.append((score, doc, meta))
+
+    # Ordena do maior score para o menor
+    ranked.sort(key=lambda x: x[0], reverse=True)
+    return ranked
+
 
 # ==============================================
 # MODO PRINCIPAL
@@ -100,8 +132,18 @@ def ask(question: str):
     print(f"\n🔍 Pergunta: {question}\n")
 
     context, results = retrieve_context(question, TOP_K)
+    
+    # >>> AQUI entra o re-rank <<<
+    ranked = rerank_results(results)
 
-    print("📚 Contexto recuperado:")
+    context_blocks = []
+    for score, doc, meta in ranked[:3]:  # você controla quantos vão pro contexto
+        block = f"[Fonte: {meta['font']} | Categoria: {meta['category']}]\n{doc}"
+        context_blocks.append(block)
+
+    context = "\n\n---\n\n".join(context_blocks)
+
+    print("📚 Contexto re-rankeado:")
     print("-" * 80)
     print(context)
     print("-" * 80)
